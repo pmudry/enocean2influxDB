@@ -77,7 +77,8 @@ public class Enocean2Influx {
 				.retentionPolicy("autogen").consistency(InfluxDB.ConsistencyLevel.ALL).build();
 
 		Point point1 = Point.measurement("temperature").time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-				.addField("location", s.getLocation()).addField("id", s.getID())
+				.tag("location", s.getLocation())
+				.tag("id", s.getID())
 				.addField("temperature", s.getTemperature()).build();
 
 		batchPoints.point(point1);
