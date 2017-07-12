@@ -10,8 +10,9 @@ public class STM330 {
 	private double temperature;
 	
 	
-	public STM330(String location){
+	public STM330(String location, byte[] id){
 		this.location = location;
+		this.enoceanID = id;
 	}
 	
 	public String getID(){

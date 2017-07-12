@@ -16,7 +16,6 @@ import org.opencean.core.packets.RadioPacket4BS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import apps.tests.TempTester;
 import sensors.STM330;
 import utils.Constants;
 import utils.Sensors;
@@ -26,12 +25,14 @@ import utils.Sensors;
  * database.
  * 
  * @author Pierre-André Mudry
- * @version 0.1
+ * @version 0.1.1
  *
  */
 public class Enocean2Influx {
 	private static Logger logger = LoggerFactory.getLogger(Enocean2Influx.class);
 
+	boolean testDB = false;
+	
 	ESP3Host esp3Host;
 	InfluxDB influxDB;
 
@@ -59,22 +60,28 @@ public class Enocean2Influx {
 		String dbName = Constants.INFLUX_DBNAME;
 
 		if (!influxDB.databaseExists(dbName)) {
-			logger.error("Database " + dbName + " not existing. Quitting !");
+			logger.error("Database " + dbName + " not existing. Creating");
+			influxDB.createDatabase(dbName);
 		}
+
+		// Flush every 2000 Points, at least every 100ms
+		influxDB.enableBatch(2000, 100, TimeUnit.MILLISECONDS);
+
+		logger.info(influxDB.version());
 	}
 
 	private void updateInflux(STM330 s) {
-		BatchPoints batchPoints = BatchPoints.database(Constants.INFLUX_DBNAME).tag("async", "true").retentionPolicy("autogen")
-				.consistency(InfluxDB.ConsistencyLevel.ALL).tag("BatchTag", "BatchTagValue").build();
+		logger.info("Sending data to influx : " + s);
 
-		Point point1 = Point.measurement("temperature")
-				.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-				.addField("location", s.getLocation())
-				.addField("id", s.getID()).addField("temperature", s.getTemperature())
-				.build();
-		
+		BatchPoints batchPoints = BatchPoints.database(Constants.INFLUX_DBNAME).tag("async", "true")
+				.retentionPolicy("autogen").consistency(InfluxDB.ConsistencyLevel.ALL).build();
+
+		Point point1 = Point.measurement("temperature").time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+				.addField("location", s.getLocation()).addField("id", s.getID())
+				.addField("temperature", s.getTemperature()).build();
+
 		batchPoints.point(point1);
-		
+
 		// Write the point to InfluxDB
 		influxDB.write(batchPoints);
 	}
@@ -121,6 +128,25 @@ public class Enocean2Influx {
 
 	/**
 	 * 
+	 */
+	private void testDB() {
+		STM330 test = Sensors.sensors.get(new EnoceanId(Sensors.dummy));
+		
+		try {
+			for (int i = 0; i < 100; i++) {
+				test.assignTemperature((byte) ((byte) 0x89 + (byte) (Math.random() * 10)));
+				logger.info("Sending dummy data to influx");
+				updateInflux(test);
+				Thread.sleep(100);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 * 
 	 * @param port
 	 *            The port to listen to (given as a "/dev/ttyXXX" device)
 	 */
@@ -128,14 +154,18 @@ public class Enocean2Influx {
 		enoceanInit(port);
 		influxInit();
 
+		if (testDB) {
+			testDB();
+		}
+
 		/**
 		 * Register the listener method to the Enocean packet handler
 		 */
 		esp3Host.addListener(new EnoceanReceiver() {
 			public void receivePacket(BasicPacket packet) {
 				STM330 s = handleEnoceanPacket(packet);
-				
-				if(s != null)
+
+				if (s != null)
 					updateInflux(s);
 			}
 		});
