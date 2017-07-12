@@ -1,26 +1,35 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>ch.hevs</groupId>
-  <artifactId>enocean</artifactId>
-  <version>0.1</version>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.opencean</groupId>
-  		<artifactId>opencean-core</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  </dependencies>
-  
-  <packaging>jar</packaging>
-  
-  <name>enocean2mqtt</name>
-  <url>https://github.com/pmudry/enocean2mqtt</url>
-  
-  <properties>
-	<jdk.version>1.7</jdk.version>
-  </properties>
-  
-  <build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ch.hevs</groupId>
+	<artifactId>enocean</artifactId>
+	<version>0.1</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.opencean</groupId>
+			<artifactId>opencean-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.influxdb/influxdb-java -->
+		<dependency>
+			<groupId>org.influxdb</groupId>
+			<artifactId>influxdb-java</artifactId>
+			<version>2.7</version>
+		</dependency>
+
+	</dependencies>
+
+	<packaging>jar</packaging>
+
+	<name>enocean2mqtt</name>
+	<url>https://github.com/pmudry/enocean2mqtt</url>
+
+	<properties>
+		<jdk.version>1.7</jdk.version>
+	</properties>
+
+	<build>
 		<finalName>enocean2mqtt-${project.version}</finalName>
 		<plugins>
 
@@ -52,16 +61,16 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-				  <excludes>
-					<exclude>**/log4j.properties</exclude>
-				  </excludes>
-				  <archive>
-				    <manifest>
-					<addClasspath>true</addClasspath>
-					<mainClass>Application</mainClass>
-					<classpathPrefix>dependency-jars/</classpathPrefix>
-				    </manifest>
-				  </archive>
+					<excludes>
+						<exclude>**/log4j.properties</exclude>
+					</excludes>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>Application</mainClass>
+							<classpathPrefix>dependency-jars/</classpathPrefix>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 
@@ -71,24 +80,24 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.5.1</version>
 				<executions>
-				  <execution>
-					<id>copy-dependencies</id>
-					<phase>package</phase>
-					<goals>
-						<goal>copy-dependencies</goal>
-					</goals>
-					<configuration>
-					  <!-- exclude junit, we need runtime dependency only -->
-					  <includeScope>runtime</includeScope>
-					  <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
-					</configuration>
-				  </execution>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<!-- exclude junit, we need runtime dependency only -->
+							<includeScope>runtime</includeScope>
+							<outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 
 		</plugins>
 	</build>
-  
+
 </project>
-  
+
 </project>

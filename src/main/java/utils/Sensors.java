@@ -13,7 +13,7 @@ public class Sensors {
 	public static HashMap<EnoceanId, STM330> sensors = new HashMap<EnoceanId, STM330>();
 	
 	static {
-		sensors.put(new EnoceanId(therm1), new STM330("bureau"));
+		sensors.put(new EnoceanId(therm1), new STM330("balcon"));
 		sensors.put(new EnoceanId(therm2), new STM330("salon"));
 	}
 }

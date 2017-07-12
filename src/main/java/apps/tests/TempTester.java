@@ -1,3 +1,4 @@
+package apps.tests;
 import org.opencean.core.ESP3Host;
 import org.opencean.core.EnoceanReceiver;
 import org.opencean.core.EnoceanSerialConnector;
@@ -11,12 +12,11 @@ import org.slf4j.LoggerFactory;
 import sensors.STM330;
 import utils.Sensors;
 
-public class Application {
-
+public class TempTester {
 	
-	private static Logger logger = LoggerFactory.getLogger(Application.class);
+	private static Logger logger = LoggerFactory.getLogger(TempTester.class);
 
-	Application(String port) {
+	TempTester(String port) {
 		ProtocolConnector connector = new EnoceanSerialConnector();
 		connector.connect(port);
 		ESP3Host esp3Host = new ESP3Host(connector);
@@ -28,14 +28,21 @@ public class Application {
 
 		esp3Host.addListener(new EnoceanReceiver() {
 			public void receivePacket(BasicPacket packet) {
+				/**
+				 * As we may have other sensors, keep only the 4BS messages
+				 */
 				if (packet instanceof RadioPacket4BS) {
 					logger.info("Got 4BS packet");
 					
 					RadioPacket4BS p4bs = (RadioPacket4BS) packet;
 					EnoceanId gotId = p4bs.getSenderId();
 					
+					/**
+					 * Keep only the messages from the registered sensors
+					 */
 					if(Sensors.sensors.containsKey(gotId)) {
 						
+						// Ignore sensors learning
 						if(p4bs.getDb0() == (byte)0x80){
 							logger.info("Got existing sensor with learn bit set");
 						}
@@ -54,8 +61,8 @@ public class Application {
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 0)
-			new Application("/dev/ttyUSB0");
+			new TempTester("/dev/ttyUSB0");
 		else
-			new Application(args[0]);
+			new TempTester(args[0]);
 	}
 }
