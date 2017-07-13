@@ -48,3 +48,6 @@ sudo apt-get install librxtx-java
 ```
 java -Djava.library.path=/usr/lib/jni -cp /usr/share/java/RXTXcomm.jar -jar enocean2mqtt-0.1.jar
 ```
+
+# Run when booting the pi
+
