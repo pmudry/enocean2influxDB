@@ -1,4 +1,4 @@
-# Enable influx repos
+# Add InfluxDB repository to the raspbian store
 
 ```
 curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
@@ -8,14 +8,12 @@ test $VERSION_ID = "8" && echo "deb https://repos.influxdata.com/debian jessie s
 ```
 
 # Install libfont config
-
 ```
 sudo apt-get install libfontconfig1
 sudo apt-get -f install
 ```
 
-# Install influxdb
-
+# Install influxdb itself
 ```
 sudo apt-get update && sudo apt-get install influxdb
 sudo service influxdb start
@@ -50,4 +48,4 @@ java -Djava.library.path=/usr/lib/jni -cp /usr/share/java/RXTXcomm.jar -jar enoc
 ```
 
 # Run when booting the pi
-
+Put the `enocean2mqtt` script into `/etc/init.d`
