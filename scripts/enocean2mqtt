@@ -1,0 +1,35 @@
+#! /bin/sh
+# /etc/init.d/enocean2mqtt
+
+### BEGIN INIT INFO
+# Provides:          enocean2mqtt
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start enocean2mqtt logging to influxdb
+# Description:       A simple script from www.stuffaboutcode.com which will start / stop a program a boot / shutdown.
+### END INIT INFO
+
+# If you want a command to always run, put it here
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting enocean2mqtt"
+    # run application you want to start
+    cd /home/pi/enocean2mqtt/target
+    java -Djava.library.path=/usr/lib/jni -cp /usrhare/java/RXTXcomm.jar -jar enocean2mqtt-0.1.jar > /home/pi/enocean2mqtt/log.txt &
+    ;;
+  stop)
+    echo "Stoppin enocean2mqtt"
+    # kill application you want to stop
+    killall java
+    ;;
+  *)
+    echo "Usage: /etc/init.d/enocean2mqtt {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
