@@ -1,20 +1,5 @@
 # Enocean2InfluxDB
-'
-mvn install
-'
 
-should create the executable jar file. This program depends on 'openocean-core' which must be build with mvn before.
+Pushes values from Enocean thermometer modules (STM330) to an InfluxDB database and displays the results with Grafana.
 
-## InfluxDB installer with docker
-sudo docker run -p 8086:8086 -p 8083:8083 influxdb
-
-## InfluxDB run
-sudo docker start influxdb
-
-## Grafana install
-Grafana in docker can be installed using the 'grafana.sh' script
-
-then
-
-sudo docker start grafana
-sudo docker start grafana-storage
+This code requires the usage of a USB300 Enocean dongle and runs on Linux (either on RaspberryPI or on x86 platform)
