@@ -21,13 +21,14 @@ sudo apt-get update && sudo apt-get install influxdb
 sudo service influxdb start
 ```
 
-## Install Grafana8
+## Install Grafana
 ```
 cd ~
 wget --output-document=grafana_4.2.0-beta1_armhf.deb https://bintray.com/fg2it/deb/download_file?file_path=testing%2Fg%2Fgrafana_4.2.0-beta1_armhf.deb
 sudo dpkg -i grafana_4.2.0-beta1_armhf.deb
 sudo apt-get install -f
 ```
+Updated versions available https://github.com/fg2it/grafana-on-raspberry/releases
 
 ### Setup that grafana starts with the PI
 sudo systemctl enable grafana-server
